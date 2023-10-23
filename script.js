@@ -1,21 +1,39 @@
+////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////
+
+// Random Number Function
 function rand(min, max) {
     min = Math.ceil(min)
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
+// Circle Spawn Function
+function spawnCircles(circleCount) {
+
+    let circles = []
+
+    for (let i = 1; i <= circleCount; i++) {
+        circles.push(new Circle)
+    }
+
+    return circles
+}
+
+////////////////////////////////////////// CLASSES //////////////////////////////////////////
+
 class Circle {
 
     constructor() {
 
+        // Random values
         this.d = rand(30, 90)
         this.r = this.d / 2
         this.x = rand(this.r, window.innerWidth - this.r)
         this.y = rand(this.r, window.innerHeight - this.r)
-
         this.dx = this.getDirection(-8, 8)
         this.dy = this.getDirection(-8, 8)
 
+        // DOM Element
         this.dom = this.buildCircle()
 
     }
@@ -44,6 +62,7 @@ class Circle {
 
     }
 
+    // Get Random Direction, Exclude 0
     getDirection(min, max) {
 
         let n = 0
@@ -54,28 +73,34 @@ class Circle {
         return n
     }
 
+    // Move Circle, Bounce against Window Boundaries
     moveCircle() {
 
+        // Right Boundary
         if (this.x + this.dx > window.innerWidth - this.r) {
             this.x = window.innerWidth - this.r
             this.dx = -this.dx
         }
 
+        // Left Boundary
         if (this.x + this.dx < this.r) {
             this.x = this.r
             this.dx = -this.dx
         }
 
+        // Bottom Boundary
         if (this.y + this.dy > window.innerHeight - this.r) {
             this.y = window.innerHeight - this.r
             this.dy = -this.dy
         }
 
+        // Top Boundary
         if (this.y + this.dy < this.r) {
             this.y = this.r
             this.dy = -this.dy
         }
 
+        // Increment Position
         this.x += this.dx
         this.y += this.dy
         this.dom.style.left = this.x + "px"
@@ -84,22 +109,30 @@ class Circle {
     }
 }
 
-let circles = []
 
-for (let i = 1; i <= 20; i++) {
+////////////////////////////////////////// CODE //////////////////////////////////////////
 
-    circles.push(new Circle)
+document.addEventListener("DOMContentLoaded", () => {
 
-}
+    let circleCount
 
-function animate() {
+    while (isNaN(circleCount) || circleCount === 0 || circleCount > 1000) {
 
-    circles.forEach(element => {
-        element.moveCircle()
-    })
+        circleCount = parseInt(prompt("Number of circles to spawn (max 1000)"))
+
+    }
+
+
+    const circles = spawnCircles(circleCount)
+
+    // Animate Circles
+    function animate() {
+        circles.forEach(element => {
+            element.moveCircle()
+        })
+        requestAnimationFrame(animate)
+    }
 
     requestAnimationFrame(animate)
 
-}
-
-requestAnimationFrame(animate)
+})
